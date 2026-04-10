@@ -27,12 +27,10 @@ class Train {
         coaches = new ArrayList<>();
     }
 
-    // Add coach
     void addCoach(Coach c) {
         coaches.add(c);
     }
 
-    // Display summary
     void displaySummary() {
         System.out.println("Train: " + trainName);
         System.out.println("Total Coaches: " + coaches.size());
@@ -50,13 +48,11 @@ public class TrainConsistentManagementApp {
 
         Train train = new Train("Express 101");
 
-        // Add coaches
         train.addCoach(new Coach("S1", "Sleeper", 72));
         train.addCoach(new Coach("S2", "Sleeper", 72));
         train.addCoach(new Coach("AC1", "AC", 50));
         train.addCoach(new Coach("GEN1", "General", 100));
 
-        // Display summary
         train.displaySummary();
     }
 }
