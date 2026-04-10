@@ -1,11 +1,14 @@
 import java.util.Scanner;
-import java.util.TreeSet;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class TrainConsistentManagementApp {
 
     public static void main(String[] args) {
 
-        TreeSet<String> bogieIDs = new TreeSet<>();
+        // LinkedHashMap → maintains insertion order + unique keys
+        LinkedHashMap<String, Integer> bogieMap = new LinkedHashMap<>();
+
         Scanner sc = new Scanner(System.in);
 
         System.out.print("Enter number of bogies: ");
@@ -16,22 +19,25 @@ public class TrainConsistentManagementApp {
             System.out.print("Enter Bogie ID: ");
             String id = sc.nextLine();
 
-            if (!bogieIDs.add(id)) {
+            // Check duplicate
+            if (bogieMap.containsKey(id)) {
                 System.out.println("Duplicate Bogie ID not allowed!");
                 i--; // retry
-            } else {
-                System.out.println("Bogie ID added successfully.");
+                continue;
             }
+
+            System.out.print("Enter Capacity for " + id + ": ");
+            int capacity = sc.nextInt();
+            sc.nextLine(); // consume newline
+
+            bogieMap.put(id, capacity);
+            System.out.println("Bogie added successfully.");
         }
 
-        System.out.println("\nSorted Bogie IDs:");
-        for (String id : bogieIDs) {
-            System.out.println(id);
-        }
-
-        if (!bogieIDs.isEmpty()) {
-            System.out.println("\nFirst Bogie ID: " + bogieIDs.first());
-            System.out.println("Last Bogie ID: " + bogieIDs.last());
+        // Display bogie details
+        System.out.println("\nBogie Details (ID -> Capacity):");
+        for (Map.Entry<String, Integer> entry : bogieMap.entrySet()) {
+            System.out.println(entry.getKey() + " -> " + entry.getValue());
         }
 
         sc.close();
