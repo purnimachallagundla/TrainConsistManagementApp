@@ -1,11 +1,12 @@
 import java.util.*;
+import java.util.stream.*;
 
 public class TrainConsistentManagementApp {
 
     public static void main(String[] args) {
 
-        // Map Bogie ID -> Capacity
-        HashMap<String, Integer> bogieMap = new HashMap<>();
+        // Map Bogie ID -> Type
+        HashMap<String, String> bogieMap = new HashMap<>();
 
         Scanner sc = new Scanner(System.in);
 
@@ -23,26 +24,25 @@ public class TrainConsistentManagementApp {
                 continue;
             }
 
-            System.out.print("Enter Capacity for " + id + ": ");
-            int capacity = sc.nextInt();
-            sc.nextLine();
+            System.out.print("Enter Bogie Type (Passenger/Goods): ");
+            String type = sc.nextLine();
 
-            bogieMap.put(id, capacity);
+            bogieMap.put(id, type);
         }
 
-        // Convert map to list
-        List<Map.Entry<String, Integer>> list = new ArrayList<>(bogieMap.entrySet());
+        // Group bogies by type using Streams
+        Map<String, List<String>> groupedBogies =
+                bogieMap.entrySet()
+                        .stream()
+                        .collect(Collectors.groupingBy(
+                                entry -> entry.getValue(),
+                                Collectors.mapping(entry -> entry.getKey(),
+                                        Collectors.toList())
+                        ));
 
-        // Sort by capacity (ascending)
-        Collections.sort(list, new Comparator<Map.Entry<String, Integer>>() {
-            public int compare(Map.Entry<String, Integer> a, Map.Entry<String, Integer> b) {
-                return a.getValue().compareTo(b.getValue());
-            }
-        });
-
-        // Display sorted result
-        System.out.println("\nBogies Sorted by Capacity:");
-        for (Map.Entry<String, Integer> entry : list) {
+        // Display grouped bogies
+        System.out.println("\nGrouped Bogies by Type:");
+        for (Map.Entry<String, List<String>> entry : groupedBogies.entrySet()) {
             System.out.println(entry.getKey() + " -> " + entry.getValue());
         }
 
