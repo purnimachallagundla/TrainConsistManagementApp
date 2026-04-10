@@ -5,7 +5,6 @@ public class TrainConsistentManagementApp {
 
     public static void main(String[] args) {
 
-        // Maps
         HashMap<String, Integer> cargoMap = new HashMap<>();
         HashMap<String, Integer> capacityMap = new HashMap<>();
         HashMap<String, String> typeMap = new HashMap<>();
@@ -21,6 +20,7 @@ public class TrainConsistentManagementApp {
             System.out.print("\nEnter Bogie ID: ");
             String id = sc.nextLine();
 
+            // Duplicate check
             if (capacityMap.containsKey(id)) {
                 System.out.println("Duplicate Bogie ID not allowed!");
                 i--;
@@ -33,22 +33,19 @@ public class TrainConsistentManagementApp {
 
             // -------- CAPACITY --------
             int capacity = 0;
-            boolean validCapacity = false;
-
-            while (!validCapacity) {
+            while (true) {
                 try {
                     System.out.print("Enter Capacity: ");
                     capacity = sc.nextInt();
                     sc.nextLine();
 
-                    if (capacity <= 0) {
+                    if (capacity <= 0)
                         throw new IllegalArgumentException("Capacity must be > 0");
-                    }
 
-                    validCapacity = true;
+                    break;
 
                 } catch (InputMismatchException e) {
-                    System.out.println("Invalid input! Enter number.");
+                    System.out.println("Invalid input! Enter a number.");
                     sc.nextLine();
                 } catch (IllegalArgumentException e) {
                     System.out.println(e.getMessage());
@@ -57,22 +54,19 @@ public class TrainConsistentManagementApp {
 
             // -------- CARGO WEIGHT --------
             int weight = 0;
-            boolean validWeight = false;
-
-            while (!validWeight) {
+            while (true) {
                 try {
                     System.out.print("Enter Cargo Weight (in tons): ");
                     weight = sc.nextInt();
                     sc.nextLine();
 
-                    if (weight <= 0) {
+                    if (weight <= 0)
                         throw new IllegalArgumentException("Weight must be > 0");
-                    }
 
-                    validWeight = true;
+                    break;
 
                 } catch (InputMismatchException e) {
-                    System.out.println("Invalid input! Enter number.");
+                    System.out.println("Invalid input! Enter a number.");
                     sc.nextLine();
                 } catch (IllegalArgumentException e) {
                     System.out.println(e.getMessage());
@@ -81,7 +75,7 @@ public class TrainConsistentManagementApp {
                 }
             }
 
-            // Store data
+            // Store values
             typeMap.put(id, type);
             capacityMap.put(id, capacity);
             cargoMap.put(id, weight);
