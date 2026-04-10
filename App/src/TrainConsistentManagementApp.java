@@ -1,99 +1,74 @@
 import java.util.*;
+import java.util.stream.*;
 
 public class TrainConsistentManagementApp {
 
     public static void main(String[] args) {
 
-        Scanner sc = new Scanner(System.in);
+        HashMap<String, Integer> capacityMap = new HashMap<>();
+        HashMap<String, String> typeMap = new HashMap<>();
 
-        // ---------------- INPUT WITH VALIDATION ----------------
-        HashMap<String, Integer> bogieMap = new HashMap<>();
+        Scanner sc = new Scanner(System.in);
 
         System.out.print("Enter number of bogies: ");
         int n = sc.nextInt();
         sc.nextLine();
 
+        String[] bogieIDs = new String[n];
+
+        // -------- INPUT --------
         for (int i = 0; i < n; i++) {
-            System.out.print("Enter Bogie ID: ");
+
+            System.out.print("\nEnter Bogie ID: ");
             String id = sc.nextLine();
 
-            if (bogieMap.containsKey(id)) {
+            if (capacityMap.containsKey(id)) {
                 System.out.println("Duplicate Bogie ID not allowed!");
                 i--;
                 continue;
             }
 
-            int capacity = 0;
-            boolean valid = false;
+            bogieIDs[i] = id;
 
-            while (!valid) {
-                try {
-                    System.out.print("Enter Capacity for " + id + ": ");
-                    capacity = sc.nextInt();
-                    sc.nextLine();
+            System.out.print("Enter Bogie Type (Passenger/Goods): ");
+            String type = sc.nextLine();
 
-                    if (capacity <= 0) {
-                        throw new IllegalArgumentException("Capacity must be greater than 0!");
-                    }
+            System.out.print("Enter Capacity: ");
+            int capacity = sc.nextInt();
+            sc.nextLine();
 
-                    valid = true;
+            typeMap.put(id, type);
+            capacityMap.put(id, capacity);
+        }
 
-                } catch (IllegalArgumentException e) {
-                    System.out.println("Invalid Input: " + e.getMessage());
-                } catch (InputMismatchException e) {
-                    System.out.println("Invalid Input: Please enter a number!");
-                    sc.nextLine(); // clear buffer
-                }
+        // -------- SORT USING STREAM --------
+        System.out.println("\nPassenger Bogies Sorted by Capacity:");
+
+        capacityMap.entrySet()
+                .stream()
+                .filter(entry -> typeMap.get(entry.getKey()).equalsIgnoreCase("Passenger"))
+                .sorted(Map.Entry.comparingByValue())
+                .forEach(entry ->
+                        System.out.println(entry.getKey() + " -> " + entry.getValue())
+                );
+
+        // -------- SEARCH --------
+        System.out.print("\nEnter Bogie ID to search: ");
+        String searchID = sc.nextLine();
+
+        boolean found = false;
+
+        for (int i = 0; i < n; i++) {
+            if (bogieIDs[i].equalsIgnoreCase(searchID)) {
+                System.out.println("Bogie ID FOUND at position: " + (i + 1));
+                found = true;
+                break;
             }
-
-            bogieMap.put(id, capacity);
-            System.out.println("Bogie added successfully.");
         }
 
-        // ---------------- PERFORMANCE COMPARISON ----------------
-        int size = 100000;
-
-        // HashSet
-        long startHash = System.nanoTime();
-        HashSet<Integer> hashSet = new HashSet<>();
-        for (int i = 0; i < size; i++) {
-            hashSet.add(i);
+        if (!found) {
+            System.out.println("Bogie ID NOT FOUND!");
         }
-        long endHash = System.nanoTime();
-
-        // TreeSet
-        long startTree = System.nanoTime();
-        TreeSet<Integer> treeSet = new TreeSet<>();
-        for (int i = 0; i < size; i++) {
-            treeSet.add(i);
-        }
-        long endTree = System.nanoTime();
-
-        // LinkedHashSet
-        long startLinked = System.nanoTime();
-        LinkedHashSet<Integer> linkedSet = new LinkedHashSet<>();
-        for (int i = 0; i < size; i++) {
-            linkedSet.add(i);
-        }
-        long endLinked = System.nanoTime();
-
-        // ---------------- OUTPUT ----------------
-        System.out.println("\nPerformance Comparison (Insertion of " + size + " elements)");
-        System.out.println("HashSet Time: " + (endHash - startHash) + " ns");
-        System.out.println("TreeSet Time: " + (endTree - startTree) + " ns");
-        System.out.println("LinkedHashSet Time: " + (endLinked - startLinked) + " ns");
-
-        // Display bogie data
-        System.out.println("\nValid Bogie Capacities:");
-        for (Map.Entry<String, Integer> entry : bogieMap.entrySet()) {
-            System.out.println(entry.getKey() + " -> " + entry.getValue());
-        }
-
-        // Notes
-        System.out.println("\nNote:");
-        System.out.println("HashSet is fastest (O(1) average)");
-        System.out.println("TreeSet is slower (O(log n) duess to sorting)");
-        System.out.println("LinkedHashSet maintains insertion orders");
 
         sc.close();
     }
