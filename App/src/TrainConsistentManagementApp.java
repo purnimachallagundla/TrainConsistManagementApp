@@ -93,7 +93,7 @@ public class TrainConsistentManagementApp {
         System.out.println("\nNote:");
         System.out.println("HashSet is fastest (O(1) average)");
         System.out.println("TreeSet is slower (O(log n) due to sorting)");
-        System.out.println("LinkedHashSet maintains insertion order");
+        System.out.println("LinkedHashSet maintains insertion orders");
 
         sc.close();
     }
