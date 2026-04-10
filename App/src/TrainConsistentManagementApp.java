@@ -4,13 +4,11 @@ public class TrainConsistentManagementApp {
 
     public static void main(String[] args) {
 
-        // Maps
-        HashMap<String, String> typeMap = new HashMap<>();
-        HashMap<String, Integer> weightMap = new HashMap<>();
-
         Scanner sc = new Scanner(System.in);
 
-        // ---------------- INPUT ----------------
+        // ---------------- INPUT WITH VALIDATION ----------------
+        HashMap<String, Integer> bogieMap = new HashMap<>();
+
         System.out.print("Enter number of bogies: ");
         int n = sc.nextInt();
         sc.nextLine();
@@ -19,37 +17,37 @@ public class TrainConsistentManagementApp {
             System.out.print("Enter Bogie ID: ");
             String id = sc.nextLine();
 
-            if (typeMap.containsKey(id)) {
+            if (bogieMap.containsKey(id)) {
                 System.out.println("Duplicate Bogie ID not allowed!");
                 i--;
                 continue;
             }
 
-            System.out.print("Enter Bogie Type (Passenger/Goods): ");
-            String type = sc.nextLine();
+            int capacity = 0;
+            boolean valid = false;
 
-            System.out.print("Enter Weight (in tons): ");
-            int weight = sc.nextInt();
-            sc.nextLine();
+            while (!valid) {
+                try {
+                    System.out.print("Enter Capacity for " + id + ": ");
+                    capacity = sc.nextInt();
+                    sc.nextLine();
 
-            typeMap.put(id, type);
-            weightMap.put(id, weight);
-        }
+                    if (capacity <= 0) {
+                        throw new IllegalArgumentException("Capacity must be greater than 0!");
+                    }
 
-        // ---------------- SAFETY CHECK ----------------
-        System.out.println("\nSafety Compliance Report (Goods Bogies):");
+                    valid = true;
 
-        for (String id : typeMap.keySet()) {
-            String type = typeMap.get(id);
-            int weight = weightMap.get(id);
-
-            if (type.equalsIgnoreCase("Goods")) {
-                if (weight <= 100) {
-                    System.out.println(id + " -> SAFE ✔ (Weight: " + weight + ")");
-                } else {
-                    System.out.println(id + " -> NOT SAFE ✖ (Weight: " + weight + ")");
+                } catch (IllegalArgumentException e) {
+                    System.out.println("Invalid Input: " + e.getMessage());
+                } catch (InputMismatchException e) {
+                    System.out.println("Invalid Input: Please enter a number!");
+                    sc.nextLine(); // clear buffer
                 }
             }
+
+            bogieMap.put(id, capacity);
+            System.out.println("Bogie added successfully.");
         }
 
         // ---------------- PERFORMANCE COMPARISON ----------------
@@ -79,17 +77,22 @@ public class TrainConsistentManagementApp {
         }
         long endLinked = System.nanoTime();
 
-        // Results
+        // ---------------- OUTPUT ----------------
         System.out.println("\nPerformance Comparison (Insertion of " + size + " elements)");
-
         System.out.println("HashSet Time: " + (endHash - startHash) + " ns");
         System.out.println("TreeSet Time: " + (endTree - startTree) + " ns");
         System.out.println("LinkedHashSet Time: " + (endLinked - startLinked) + " ns");
 
+        // Display bogie data
+        System.out.println("\nValid Bogie Capacities:");
+        for (Map.Entry<String, Integer> entry : bogieMap.entrySet()) {
+            System.out.println(entry.getKey() + " -> " + entry.getValue());
+        }
+
         // Notes
         System.out.println("\nNote:");
-        System.out.println("HashSet is fastest (no ordering)");
-        System.out.println("TreeSet is slowest (sorting required)");
+        System.out.println("HashSet is fastest (O(1) average)");
+        System.out.println("TreeSet is slower (O(log n) due to sorting)");
         System.out.println("LinkedHashSet maintains insertion order");
 
         sc.close();
