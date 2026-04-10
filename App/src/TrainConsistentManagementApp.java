@@ -2,16 +2,6 @@ import java.util.*;
 
 public class TrainConsistentManagementApp {
 
-    // Validate Train ID (Example: TR-1234)
-    public static boolean isValidTrainID(String trainID) {
-        return trainID.matches("TR-\\d{4}");
-    }
-
-    // Validate Cargo Code (Example: CG-ABC123)
-    public static boolean isValidCargoCode(String cargoCode) {
-        return cargoCode.matches("CG-[A-Z]{3}\\d{3}");
-    }
-
     public static void main(String[] args) {
 
         // Maps
@@ -20,18 +10,8 @@ public class TrainConsistentManagementApp {
 
         Scanner sc = new Scanner(System.in);
 
-        // Train ID validation
-        System.out.print("Enter Train ID (Format TR-1234): ");
-        String trainID = sc.nextLine();
-
-        if (isValidTrainID(trainID)) {
-            System.out.println("Valid Train ID ✔");
-        } else {
-            System.out.println("Invalid Train ID ✖");
-        }
-
-        // Input bogies
-        System.out.print("\nEnter number of bogies: ");
+        // ---------------- INPUT ----------------
+        System.out.print("Enter number of bogies: ");
         int n = sc.nextInt();
         sc.nextLine();
 
@@ -56,17 +36,7 @@ public class TrainConsistentManagementApp {
             weightMap.put(id, weight);
         }
 
-        // Cargo Code validation
-        System.out.print("\nEnter Cargo Code (Format CG-ABC123): ");
-        String cargoCode = sc.nextLine();
-
-        if (isValidCargoCode(cargoCode)) {
-            System.out.println("Valid Cargo Code ✔");
-        } else {
-            System.out.println("Invalid Cargo Code ✖");
-        }
-
-        // Safety report
+        // ---------------- SAFETY CHECK ----------------
         System.out.println("\nSafety Compliance Report (Goods Bogies):");
 
         for (String id : typeMap.keySet()) {
@@ -81,6 +51,46 @@ public class TrainConsistentManagementApp {
                 }
             }
         }
+
+        // ---------------- PERFORMANCE COMPARISON ----------------
+        int size = 100000;
+
+        // HashSet
+        long startHash = System.nanoTime();
+        HashSet<Integer> hashSet = new HashSet<>();
+        for (int i = 0; i < size; i++) {
+            hashSet.add(i);
+        }
+        long endHash = System.nanoTime();
+
+        // TreeSet
+        long startTree = System.nanoTime();
+        TreeSet<Integer> treeSet = new TreeSet<>();
+        for (int i = 0; i < size; i++) {
+            treeSet.add(i);
+        }
+        long endTree = System.nanoTime();
+
+        // LinkedHashSet
+        long startLinked = System.nanoTime();
+        LinkedHashSet<Integer> linkedSet = new LinkedHashSet<>();
+        for (int i = 0; i < size; i++) {
+            linkedSet.add(i);
+        }
+        long endLinked = System.nanoTime();
+
+        // Results
+        System.out.println("\nPerformance Comparison (Insertion of " + size + " elements)");
+
+        System.out.println("HashSet Time: " + (endHash - startHash) + " ns");
+        System.out.println("TreeSet Time: " + (endTree - startTree) + " ns");
+        System.out.println("LinkedHashSet Time: " + (endLinked - startLinked) + " ns");
+
+        // Notes
+        System.out.println("\nNote:");
+        System.out.println("HashSet is fastest (no ordering)");
+        System.out.println("TreeSet is slowest (sorting required)");
+        System.out.println("LinkedHashSet maintains insertion order");
 
         sc.close();
     }
