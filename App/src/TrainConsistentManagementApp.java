@@ -6,19 +6,22 @@ public class TrainConsistentManagementApp {
     public static void main(String[] args) {
 
         // Map Bogie ID -> Type
-        HashMap<String, String> bogieMap = new HashMap<>();
+        HashMap<String, String> typeMap = new HashMap<>();
+
+        // Map Bogie ID -> Capacity
+        HashMap<String, Integer> capacityMap = new HashMap<>();
 
         Scanner sc = new Scanner(System.in);
 
         System.out.print("Enter number of bogies: ");
         int n = sc.nextInt();
-        sc.nextLine(); // consume newline
+        sc.nextLine();
 
         for (int i = 0; i < n; i++) {
             System.out.print("Enter Bogie ID: ");
             String id = sc.nextLine();
 
-            if (bogieMap.containsKey(id)) {
+            if (typeMap.containsKey(id)) {
                 System.out.println("Duplicate Bogie ID not allowed!");
                 i--;
                 continue;
@@ -27,12 +30,17 @@ public class TrainConsistentManagementApp {
             System.out.print("Enter Bogie Type (Passenger/Goods): ");
             String type = sc.nextLine();
 
-            bogieMap.put(id, type);
+            System.out.print("Enter Capacity (Seats) for " + id + ": ");
+            int capacity = sc.nextInt();
+            sc.nextLine();
+
+            typeMap.put(id, type);
+            capacityMap.put(id, capacity);
         }
 
-        // Group bogies by type using Streams
+        // Group bogies by type
         Map<String, List<String>> groupedBogies =
-                bogieMap.entrySet()
+                typeMap.entrySet()
                         .stream()
                         .collect(Collectors.groupingBy(
                                 entry -> entry.getValue(),
@@ -45,6 +53,21 @@ public class TrainConsistentManagementApp {
         for (Map.Entry<String, List<String>> entry : groupedBogies.entrySet()) {
             System.out.println(entry.getKey() + " -> " + entry.getValue());
         }
+
+        // Calculate total seats
+        int totalSeats = 0;
+        for (int seats : capacityMap.values()) {
+            totalSeats += seats;
+        }
+
+        // Display bogie details
+        System.out.println("\nBogie Details (ID -> Seats):");
+        for (Map.Entry<String, Integer> entry : capacityMap.entrySet()) {
+            System.out.println(entry.getKey() + " -> " + entry.getValue());
+        }
+
+        // Display total seats
+        System.out.println("\nTotal Seats in Train: " + totalSeats);
 
         sc.close();
     }
