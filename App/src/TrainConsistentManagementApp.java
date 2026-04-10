@@ -14,8 +14,9 @@ public class TrainConsistentManagementApp {
 
     public static void main(String[] args) {
 
-        // Map Bogie ID -> Capacity
-        HashMap<String, Integer> bogieMap = new HashMap<>();
+        // Maps
+        HashMap<String, String> typeMap = new HashMap<>();
+        HashMap<String, Integer> weightMap = new HashMap<>();
 
         Scanner sc = new Scanner(System.in);
 
@@ -29,6 +30,7 @@ public class TrainConsistentManagementApp {
             System.out.println("Invalid Train ID ✖");
         }
 
+        // Input bogies
         System.out.print("\nEnter number of bogies: ");
         int n = sc.nextInt();
         sc.nextLine();
@@ -37,17 +39,21 @@ public class TrainConsistentManagementApp {
             System.out.print("Enter Bogie ID: ");
             String id = sc.nextLine();
 
-            if (bogieMap.containsKey(id)) {
+            if (typeMap.containsKey(id)) {
                 System.out.println("Duplicate Bogie ID not allowed!");
                 i--;
                 continue;
             }
 
-            System.out.print("Enter Capacity (Seats) for " + id + ": ");
-            int capacity = sc.nextInt();
+            System.out.print("Enter Bogie Type (Passenger/Goods): ");
+            String type = sc.nextLine();
+
+            System.out.print("Enter Weight (in tons): ");
+            int weight = sc.nextInt();
             sc.nextLine();
 
-            bogieMap.put(id, capacity);
+            typeMap.put(id, type);
+            weightMap.put(id, weight);
         }
 
         // Cargo Code validation
@@ -60,20 +66,21 @@ public class TrainConsistentManagementApp {
             System.out.println("Invalid Cargo Code ✖");
         }
 
-        // Calculate total seats
-        int totalSeats = 0;
-        for (int seats : bogieMap.values()) {
-            totalSeats += seats;
-        }
+        // Safety report
+        System.out.println("\nSafety Compliance Report (Goods Bogies):");
 
-        // Display bogie details
-        System.out.println("\nBogie Details (ID -> Seats):");
-        for (Map.Entry<String, Integer> entry : bogieMap.entrySet()) {
-            System.out.println(entry.getKey() + " -> " + entry.getValue());
-        }
+        for (String id : typeMap.keySet()) {
+            String type = typeMap.get(id);
+            int weight = weightMap.get(id);
 
-        // Display total seats
-        System.out.println("\nTotal Seats in Train: " + totalSeats);
+            if (type.equalsIgnoreCase("Goods")) {
+                if (weight <= 100) {
+                    System.out.println(id + " -> SAFE ✔ (Weight: " + weight + ")");
+                } else {
+                    System.out.println(id + " -> NOT SAFE ✖ (Weight: " + weight + ")");
+                }
+            }
+        }
 
         sc.close();
     }
