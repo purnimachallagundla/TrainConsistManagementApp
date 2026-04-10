@@ -1,12 +1,9 @@
-import java.util.*;
-import java.util.stream.*;
+import java.util.Arrays;
+import java.util.Scanner;
 
 public class TrainConsistentManagementApp {
 
     public static void main(String[] args) {
-
-        HashMap<String, Integer> capacityMap = new HashMap<>();
-        HashMap<String, String> typeMap = new HashMap<>();
 
         Scanner sc = new Scanner(System.in);
 
@@ -14,55 +11,47 @@ public class TrainConsistentManagementApp {
         int n = sc.nextInt();
         sc.nextLine();
 
+        String[] bogieNames = new String[n];
         String[] bogieIDs = new String[n];
 
         // -------- INPUT --------
         for (int i = 0; i < n; i++) {
+            System.out.print("\nEnter Bogie Name: ");
+            bogieNames[i] = sc.nextLine();
 
-            System.out.print("\nEnter Bogie ID: ");
-            String id = sc.nextLine();
-
-            if (capacityMap.containsKey(id)) {
-                System.out.println("Duplicate Bogie ID not allowed!");
-                i--;
-                continue;
-            }
-
-            bogieIDs[i] = id;
-
-            System.out.print("Enter Bogie Type (Passenger/Goods): ");
-            String type = sc.nextLine();
-
-            System.out.print("Enter Capacity: ");
-            int capacity = sc.nextInt();
-            sc.nextLine();
-
-            typeMap.put(id, type);
-            capacityMap.put(id, capacity);
+            System.out.print("Enter Bogie ID: ");
+            bogieIDs[i] = sc.nextLine();
         }
 
-        // -------- SORT USING STREAM --------
-        System.out.println("\nPassenger Bogies Sorted by Capacity:");
+        // -------- SORT --------
+        Arrays.sort(bogieIDs);
 
-        capacityMap.entrySet()
-                .stream()
-                .filter(entry -> typeMap.get(entry.getKey()).equalsIgnoreCase("Passenger"))
-                .sorted(Map.Entry.comparingByValue())
-                .forEach(entry ->
-                        System.out.println(entry.getKey() + " -> " + entry.getValue())
-                );
+        System.out.println("\nSorted Bogie IDs:");
+        for (String id : bogieIDs) {
+            System.out.println(id);
+        }
 
         // -------- SEARCH --------
         System.out.print("\nEnter Bogie ID to search: ");
         String searchID = sc.nextLine();
 
+        int left = 0, right = n - 1;
         boolean found = false;
 
-        for (int i = 0; i < n; i++) {
-            if (bogieIDs[i].equalsIgnoreCase(searchID)) {
-                System.out.println("Bogie ID FOUND at position: " + (i + 1));
+        // -------- BINARY SEARCH --------
+        while (left <= right) {
+            int mid = (left + right) / 2;
+
+            int compare = bogieIDs[mid].compareToIgnoreCase(searchID);
+
+            if (compare == 0) {
+                System.out.println("Bogie ID FOUND at position: " + (mid + 1));
                 found = true;
                 break;
+            } else if (compare < 0) {
+                left = mid + 1;
+            } else {
+                right = mid - 1;
             }
         }
 
