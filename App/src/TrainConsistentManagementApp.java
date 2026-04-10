@@ -13,24 +13,21 @@ public class TrainConsistentManagementApp {
         int n = sc.nextInt();
         sc.nextLine(); // consume newline
 
-        // Input
         for (int i = 0; i < n; i++) {
             System.out.print("Enter Bogie ID: ");
             String id = sc.nextLine();
 
-            // Check duplicate
             if (bogieMap.containsKey(id)) {
                 System.out.println("Duplicate Bogie ID not allowed!");
-                i--; // retry
+                i--;
                 continue;
             }
 
             System.out.print("Enter Capacity for " + id + ": ");
             int capacity = sc.nextInt();
-            sc.nextLine(); // consume newline
+            sc.nextLine();
 
             bogieMap.put(id, capacity);
-            System.out.println("Bogie added successfully.");
         }
 
         // Convert map to list
